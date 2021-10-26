@@ -2,8 +2,10 @@ from class0 import File, Header
 
 
 def main():
-    myFile = File("../data/30.bmp")
-    print(myFile.header)
+    testimg = File("../testImages/images.bmp")
+    testimg.print_raw()
+    testimg.create_header()
+    print(testimg.header.width)
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
-from class0 import File, Header
+from class0 import *
 
 
 def main():
-    testimg = File("../testImages/images.bmp")
-    testimg.print_raw()
-    testimg.create_header()
-    print(testimg.header.width)
+    testimg = Image("../testImages/test.bmp")
+    testimg.file.header.print_header()
+    testimg.array_pixels()
+
 
 
 if __name__ == "__main__":

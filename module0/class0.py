@@ -1,13 +1,16 @@
+from matplotlib.pyplot import imshow, show
+
 
 def little_endian(array_slice):                         # Return a hex string given a little endian slice
     return "".join([str(j[2:].zfill(2)) for j in array_slice[::-1]])
 
 
-def ngreyscale(pixel: list) -> float:     # Return a value between 0 and 1 of greyscale intensity
-    return sum([int(i, 16) for i in pixel]) / (255 * len(pixel))
+def indivgs(pixel: list) -> float:                   # Return a value between 0 and 1 of greyscale intensity
+    dec_lst = [int(channel, 16) for channel in pixel]
+    return (0.299*dec_lst[2] + 0.587*dec_lst[1] + 0.114*dec_lst[0]) / (255 * len(pixel))
 
 
-def lstsplit(array, split: int):
+def lstsplit(array, split: int):                        # Split a list at a given interval
     return [array[index:index + split] for index in range(0, len(array), split)]
 
 
@@ -65,12 +68,27 @@ class Image:
         self.file = File(filename)
         self.file.create_header()
         self.pixelsraw = self.file.data[self.file.header.offset:]
-        self.pixels = []
-        self.xpadding = 4 - int((self.file.header.width * (self.file.header.depth / 8)) % 4)  # This gets DWORD padding
+        self.xpadding = (4 - int((self.file.header.width * (self.file.header.depth / 8)) % 4)) % 4  # This gets DWORD padding
+        self.pixels = self.array_pixels()
+        self.greyscalepxl = self.greyscale()
 
 
     def array_pixels(self):
         rows = lstsplit(self.pixelsraw, int(self.file.header.swidth + self.xpadding))
-        realrows = [lstsplit(row[:-1 * self.xpadding], int(self.file.header.depth / 8)) for row in rows]
-        return realrows
+        return [lstsplit(row[:-1 * self.xpadding], int(self.file.header.depth / 8)) for row in rows]
 
+
+    def greyscale(self):
+        return [[indivgs(pixel) for pixel in row] for row in self.pixels]
+
+
+    # Display Methods
+
+
+    def printts(self):
+        pass
+
+
+    def display(self):
+        imgplot = imshow(self.greyscalepxl)
+        show()

@@ -1,9 +1,11 @@
-from class0 import *
+from module0 import class0
+from module1 import class1
 
 
 def main():
-    testimg = Image("../testImages/test.bmp")
-    testimg.display()
+    testimg = class0.Image("../testImages/sdjm.bmp")
+    # testimg.display()
+    testimg.asciiart()
 
 
 

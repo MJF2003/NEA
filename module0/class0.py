@@ -1,4 +1,4 @@
-from func import *
+import func
 
 
 # # # # # # # # # # # # # # # General Function Definitions # # # # # # # # # # # # # # #
@@ -79,7 +79,7 @@ class File:  # Object which contains both image and header data. Reception objec
 # # # # # # # # # End of File Nonsense # # # # # # # # # #
 
 
-class Image(Arr2d):
+class Image(func.Arr2d):
     def __init__(self, filename):
         self.file = File(filename)
         self.file.create_header()
@@ -90,11 +90,3 @@ class Image(Arr2d):
         rgbpixels = list(map(lambda row: lstsplit(row[:len(row) - xpadding], int(self.file.header.depth / 8)), rows))
         self.data = [list(map(indivgs, row)) for row in rgbpixels]
 
-
-
-
-
-
-
-
-    

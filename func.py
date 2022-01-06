@@ -1,7 +1,7 @@
-from module0 import class0
-from module1 import class1
+
 from datetime import datetime as dt
 from matplotlib.pyplot import imshow, show
+
 
 
 def valid(vtype: str, ipt, comp) -> bool:
@@ -29,6 +29,7 @@ class Arr2d:  # General 2D Array Class with common methods
         self.data = []
         self.zeros()  # Initalise full of zeros
 
+
     def zeros(self):  # Uses List Comprehension to fill the data with zeros
         self.data = [[0 for a in range(self.width)] for b in range(self.height)]
 
@@ -49,7 +50,8 @@ class Arr2d:  # General 2D Array Class with common methods
         show()
 
     def asciiart(self):
-        reps = ["$", "@", "B", "%", "8", "&", "W", "M", "#", "*", "o", "a", "h", "k", "b", "d", "p", "q", "w", "m", "Z",
+        reps = ["$", "@", "B", "%", "8", "&", "W", "M", "#", "*", "o", "a", "h", "k", "b", "d", "p", "q", "w", "m",
+                "Z",
                 "O", "0", "Q", "L", "C", "J", "U", "Y", "X", "z", "c", "v", "u", "n", "x", "r", "j", "f", "t", "/",
                 "\\", "|", "(", ")", "1", "{", "}", "[", "]", "?", "-", "_", "+", "~", "<", ">", "i", "!", "l", "I",
                 ";", ":", "\"", "^", "`", "'", ".", " "]
@@ -59,6 +61,14 @@ class Arr2d:  # General 2D Array Class with common methods
             for row in self.data:
                 f.write("".join([reps[round(px * len(reps)) - 1] for px in row]))
                 f.write("\n")
+
+    def convolve(self, kn):
+        pad = int(kn.mid)
+        data = self.data
+        for rn in range(pad, len(data)-pad):
+            for pn in range(pad, len(data[rn])-pad):
+                newpx = sum([kn.data[y][x] * data[rn + y - pad][pn + x - pad] for x in range(kn.width) for y in range(kn.height)])
+                self.data[rn][pn] = newpx
 
 
 # # # # # # # # # # # # End of General 2D Array Class Definition # # # # # # # # # # # #

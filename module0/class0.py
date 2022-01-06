@@ -1,50 +1,6 @@
-from datetime import datetime as dt
-from matplotlib.pyplot import imshow, show
-import func
-
-# # # # # # # # # # # # General 2D Array Class Definition # # # # # # # # # # # #
+from func import *
 
 
-class Arr2d:  # General 2D Array Class with common methods
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.data = []
-        self.zeros()  # Initalise full of zeros
-
-    def zeros(self):  # Uses List Comprehension to fill the data with zeros
-        self.data = [[0 for a in range(self.width)] for b in range(self.height)]
-
-    def xy(self, x, y):  # Returns a value based on the x and y coordinates
-        return self.data[y][x]
-
-    def flatten(self):  # Returns the data as 1D array - bins off rows
-        return [x for y in self.data for x in y]
-
-    def getrow(self, y):  # Returns a row given a y value
-        return self.data[y]
-
-    def getcol(self, x):  # Returns a column given an x value
-        return [self.data[y][x] for y in range(self.height)]
-
-    def display(self):  # Uses MPL to plot the data as an image with greyscal colour mapping
-        imshow(self.data, cmap="gray")
-        show()
-        
-    def asciiart(self):
-        reps = ["$", "@", "B", "%", "8", "&", "W", "M", "#", "*", "o", "a", "h", "k", "b", "d", "p", "q", "w", "m", "Z",
-                "O", "0", "Q", "L", "C", "J", "U", "Y", "X", "z", "c", "v", "u", "n", "x", "r", "j", "f", "t", "/",
-                "\\", "|", "(", ")", "1", "{", "}", "[", "]", "?", "-", "_", "+", "~", "<", ">", "i", "!", "l", "I",
-                ";", ":", "\"", "^", "`", "'", ".", " "]
-        filename = f"{dt.now().year}-{dt.now().month}-{dt.now().day}-{str(dt.now().hour).zfill(2)}\
-                    {str(dt.now().minute).zfill(2)}{str(dt.now().second).zfill(2)}.txt"
-        with open(filename, "a") as f:
-            for row in self.data:
-                map(lambda px: f.write(reps[round(px * len(reps)) - 1]), row[(self.width - 1023)//2:-(self.width - 1023)//2])
-                f.write("\n")
-
-
-# # # # # # # # # # # # End of General 2D Array Class Definition # # # # # # # # # # # #
 # # # # # # # # # # # # # # # General Function Definitions # # # # # # # # # # # # # # #
 
 
@@ -63,7 +19,7 @@ def lstsplit(array, split: int):  # Split a list at a given interval
 
 
 # # # # # # # # # # # # End of General Function Definitions # # # # # # # # # # # # # #
-# # # # # # # # # File Nonsense # # # # # # # # # #
+# # # # # # # # # File Definition Nonsense # # # # # # # # # #
 
 
 class Header:  # Header object created by file at file import containing all relevant file details
@@ -133,6 +89,7 @@ class Image(Arr2d):
         rows = lstsplit(self.pixelsraw, self.file.header.swidth + xpadding)[::-1]
         rgbpixels = list(map(lambda row: lstsplit(row[:len(row) - xpadding], int(self.file.header.depth / 8)), rows))
         self.data = [list(map(indivgs, row)) for row in rgbpixels]
+
 
 
 

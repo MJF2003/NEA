@@ -1,5 +1,7 @@
 from module0 import class0
 from module1 import class1
+from datetime import datetime as dt
+from matplotlib.pyplot import imshow, show
 
 
 def valid(vtype: str, ipt, comp) -> bool:
@@ -15,6 +17,51 @@ def valid(vtype: str, ipt, comp) -> bool:
         return ipt.isdigit()
     else:
         return True
+
+
+# # # # # # # # # # # # General 2D Array Class Definition # # # # # # # # # # # #
+
+
+class Arr2d:  # General 2D Array Class with common methods
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.data = []
+        self.zeros()  # Initalise full of zeros
+
+    def zeros(self):  # Uses List Comprehension to fill the data with zeros
+        self.data = [[0 for a in range(self.width)] for b in range(self.height)]
+
+    def xy(self, x, y):  # Returns a value based on the x and y coordinates
+        return self.data[y][x]
+
+    def flatten(self):  # Returns the data as 1D array - bins off rows
+        return [x for y in self.data for x in y]
+
+    def getrow(self, y):  # Returns a row given a y value
+        return self.data[y]
+
+    def getcol(self, x):  # Returns a column given an x value
+        return [self.data[y][x] for y in range(self.height)]
+
+    def display(self):  # Uses MPL to plot the data as an image with greyscal colour mapping
+        imshow(self.data, cmap="gray")
+        show()
+
+    def asciiart(self):
+        reps = ["$", "@", "B", "%", "8", "&", "W", "M", "#", "*", "o", "a", "h", "k", "b", "d", "p", "q", "w", "m", "Z",
+                "O", "0", "Q", "L", "C", "J", "U", "Y", "X", "z", "c", "v", "u", "n", "x", "r", "j", "f", "t", "/",
+                "\\", "|", "(", ")", "1", "{", "}", "[", "]", "?", "-", "_", "+", "~", "<", ">", "i", "!", "l", "I",
+                ";", ":", "\"", "^", "`", "'", ".", " "]
+        filename = f"{dt.now().year}-{dt.now().month}-{dt.now().day}-{str(dt.now().hour).zfill(2)}\
+{str(dt.now().minute).zfill(2)}{str(dt.now().second).zfill(2)}.txt"
+        with open(filename, "a") as f:
+            for row in self.data:
+                f.write("".join([reps[round(px * len(reps)) - 1] for px in row]))
+                f.write("\n")
+
+
+# # # # # # # # # # # # End of General 2D Array Class Definition # # # # # # # # # # # #
 
 
 class Program:
@@ -50,9 +97,6 @@ class Program:
         option = input("Enter a number from the list above: ")
         while not valid("DG", option):
             option = input("Enter a number from the list above: ")
-
-
-
         print(self.status)
 
     def getpath(self):
@@ -66,3 +110,4 @@ class Program:
 
     def edgedetect(self):
         pass
+

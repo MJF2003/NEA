@@ -2,9 +2,11 @@ from module1.class1 import *
 from module0.class0 import *
 
 
+
 def main():
-    testimg = Image("../testImages/sdjm.bmp")
+    testimg = Image("../testImages/images.bmp")
     testimg.display()
+
     testimg.asciiart()
     # for y, row in enumerate(procimg.data[2:-2], 2):
     #     for x, px in enumerate(row[2:-2], 2):

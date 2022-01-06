@@ -28,12 +28,12 @@ class SymMat(class0.Arr2d):
 
 
 
-
 class Gsimg(class0.Arr2d):
     def __init__(self, image_object: class0.Image, width, height):
         super().__init__(width, height)
         self.pxls = image_object.data
-        self.data = [[px[0] for px in row] for row in self.pxls]
+        print(self.pxls)
+        self.data = 0
 
 
 

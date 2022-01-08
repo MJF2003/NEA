@@ -4,6 +4,7 @@ from module1.class1 import *
 
 
 
+
 def main():
     print("""Welcome to Michael Fahey's A-Level Computer Science NEA.
             
@@ -15,15 +16,16 @@ def main():
 
 
 def test():
-    testimg = Image("testImages/bendir.bmp")
+    testimg = Image("testImages/images.bmp")
     testimg.display()
-    testimg.data = convolve(testimg, gaussian_kernel(3, sigma=1))
+    testimg.data = convolve(testimg, gaussian_kernel(5, sigma=1))
     testimg.display()
     testegs = Edges(testimg)
     testegs.xedges.display()
     testegs.yedges.display()
     testegs.display()
-    print(testegs.angles)
+
+
 
 
 

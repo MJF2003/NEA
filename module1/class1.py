@@ -41,10 +41,13 @@ class Edges(Arr2d):
             for x in range(self.width):
                 magn.data[y][x] = (self.xedges.data[y][x]**2 + self.yedges.data[y][x]**2)**0.5
                 try:
-                    angs.data[y][x] = atan(self.yedges.data[y][x] / self.xedges.data[y][x])
+                    angs.data[y][x] = round(atan(self.yedges.data[y][x] / self.xedges.data[y][x]) / (pi/4))*(pi/4)
                 except ZeroDivisionError:
                     angs.data[y][x] = pi/2
         return magn.data, angs.data
+
+    def nonmax(self):
+        pass
 
 
 

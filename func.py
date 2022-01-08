@@ -57,7 +57,7 @@ class Arr2d:  # General 2D Array Class with common methods
     def getcol(self, x):  # Returns a column given an x value
         return [self.data[y][x] for y in range(self.height)]
 
-    def display(self):  # Uses MPL to plot the data as an image with greyscal colour mapping
+    def display(self):  # Uses MPL to plot the data as an image with greyscale colour mapping
         imshow(self.data, cmap="gray")
         show()
 

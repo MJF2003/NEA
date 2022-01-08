@@ -1,4 +1,4 @@
-
+import copy
 from datetime import datetime as dt
 from matplotlib.pyplot import imshow, show
 
@@ -20,6 +20,18 @@ def valid(vtype: str, ipt, comp) -> bool:
 
 
 # # # # # # # # # # # # General 2D Array Class Definition # # # # # # # # # # # #
+
+
+def convolve(image, kn):
+    ckn = copy.deepcopy(kn)
+    pad = int(ckn.mid)
+    data = image.data
+    output = [list(row) for row in data]
+    for rn in range(pad, len(data)-pad):
+        for pn in range(pad, len(data[rn])-pad):
+            px = [kn.data[y][x] * data[rn + y - pad][pn + x - pad] for y in range(ckn.height) for x in range(ckn.width)]
+            output[rn][pn] = sum(px)
+    return output
 
 
 class Arr2d:  # General 2D Array Class with common methods
@@ -61,14 +73,6 @@ class Arr2d:  # General 2D Array Class with common methods
             for row in self.data:
                 f.write("".join([reps[round(px * len(reps)) - 1] for px in row]))
                 f.write("\n")
-
-    def convolve(self, kn):
-        pad = int(kn.mid)
-        data = self.data
-        for rn in range(pad, len(data)-pad):
-            for pn in range(pad, len(data[rn])-pad):
-                newpx = sum([kn.data[y][x] * data[rn + y - pad][pn + x - pad] for x in range(kn.width) for y in range(kn.height)])
-                self.data[rn][pn] = newpx
 
 
 # # # # # # # # # # # # End of General 2D Array Class Definition # # # # # # # # # # # #

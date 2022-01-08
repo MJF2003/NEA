@@ -15,14 +15,16 @@ def main():
 
 
 def test():
-    testimg = Image("testImages/sdjm.bmp")
+    testimg = Image("testImages/bendir.bmp")
     testimg.display()
-    # testimg.asciiart()
-    gausskn = gaussian_kernel(7, sigma=1)
-    print(gausskn.data)
-    testimg.convolve(gausskn)
+    testimg.data = convolve(testimg, gaussian_kernel(3, sigma=1))
     testimg.display()
-    testimg.asciiart()
+    testegs = Edges(testimg)
+    testegs.xedges.display()
+    testegs.yedges.display()
+    testegs.display()
+    print(testegs.angles)
+
 
 
 

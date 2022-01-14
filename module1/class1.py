@@ -24,6 +24,10 @@ def sobely():
     return kn
 
 
+def nms(x, y):
+    pass
+
+
 class Edges(Arr2d):
     def __init__(self, image):
         super().__init__(image.width, image.height)
@@ -47,7 +51,9 @@ class Edges(Arr2d):
         return magn.data, angs.data
 
     def nonmax(self):
-        pass
+        for y in range(self.height):
+            for x in range(self.width):
+                nms()
 
 
 

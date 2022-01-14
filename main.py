@@ -24,7 +24,7 @@ def test():
     testegs.xedges.display()
     testegs.yedges.display()
     testegs.display()
-
+    print(testegs.angles)
 
 
 

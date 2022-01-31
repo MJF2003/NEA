@@ -24,7 +24,7 @@ def sobely():
     return kn
 
 
-def nms(x, y):
+def nms(angle, srnd):
     pass
 
 
@@ -51,9 +51,13 @@ class Edges(Arr2d):
         return magn.data, angs.data
 
     def nonmax(self):
-        for y in range(self.height):
-            for x in range(self.width):
-                nms()
+        for y in range(1, self.height - 1):
+            for x in range(1, self.width - 1):
+                surround = Arr2d(3, 3)
+                surround.data = [[self.data[y-1][x-1], self.data[y-1][x], self.data[y-1][x+1]],
+                                 [self.data[y][x-1], self.data[y][x], self.data[y][x+1]],
+                                 [self.data[y+1][x-1], self.data[y+1][x], self.data[y+1][x+1]]]
+                nms(self.angles[y][x], surround.data)
 
 
 

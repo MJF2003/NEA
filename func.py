@@ -1,6 +1,6 @@
 import copy
 from datetime import datetime as dt
-from matplotlib.pyplot import imshow, show
+from matplotlib.pyplot import imshow, show, title
 
 
 
@@ -57,8 +57,9 @@ class Arr2d:  # General 2D Array Class with common methods
     def getcol(self, x):  # Returns a column given an x value
         return [self.data[y][x] for y in range(self.height)]
 
-    def display(self):  # Uses MPL to plot the data as an image with greyscale colour mapping
+    def display(self, titlestr):  # Uses MPL to plot the data as an image with greyscale colour mapping
         imshow(self.data, cmap="gray")
+        title(str(titlestr))
         show()
 
     def asciiart(self):

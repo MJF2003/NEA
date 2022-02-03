@@ -17,17 +17,19 @@ def main():
 
 def test():
     testimg = Image("testImages/images.bmp")
-    testimg.display()
-    testimg.data = convolve(testimg, gaussian_kernel(5, sigma=1))
-    testimg.display()
+    testimg.display("Initial Image")
+    testimg.data = convolve(testimg, gaussian_kernel(5, sigma=1.2))
+    testimg.display("Gaussian Blur")
     testegs = Edges(testimg)
-    testegs.xedges.display()
-    testegs.yedges.display()
-    testegs.display()
+    testegs.xedges.display("X Edges")
+    testegs.yedges.display("Y Edges")
+    testegs.display("Full Edges")
     testegs.nonmax()
-    testegs.display()
-    testegs.dblthresh(0.37, 0.63)
-    testegs.display()
+    testegs.display("Non-Maximum Supression")
+    testegs.dblthresh(0.33, 0.66)
+    testegs.display("Double Thresholding")
+    testegs.hysteresis()
+    testegs.display("Hysteresis Tracking")
 
 
 

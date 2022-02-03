@@ -25,6 +25,14 @@ def sobely():  # Defines the Sobel Y filter as a symmetrical matrix class
     return kn
 
 
+def surround(data, x, y):
+    srnd = SymMat(3)  # Defines the immediately adjacent pixels to the pixel in question
+    srnd.data = [[data[y - 1][x - 1], data[y - 1][x], data[y - 1][x + 1]],
+                 [data[y][x - 1], data[y][x], data[y][x + 1]],
+                 [data[y + 1][x - 1], data[y + 1][x], data[y + 1][x + 1]]]
+    return srnd
+
+
 def nms(angle, srnd):  # Perfoms checking on the relevant adjacent pixels given the angle and a 3x3 of pixels
     to_check = [
         ((2, 1), (0, 1)),  # If angle is 0 rad
@@ -46,6 +54,9 @@ class Edges(Arr2d):
         self.yedges = Arr2d(image.width, image.height)
         self.yedges.data = convolve(image, sobely())
         self.data, self.angles = self.assemble()
+        self.strongval = 1
+        self.weakval = 0.4
+        self.irrval = 0
 
 
     def assemble(self):
@@ -65,11 +76,8 @@ class Edges(Arr2d):
     def nonmax(self):  # Runs NMS on each pixel in the edge array
         for y in range(1, self.height - 1):
             for x in range(1, self.width - 1):
-                surround = SymMat(3)  # Defines the immediately adjacent pixels to the pixel in question
-                surround.data = [[self.data[y-1][x-1], self.data[y-1][x], self.data[y-1][x+1]],
-                                 [self.data[y][x-1], self.data[y][x], self.data[y][x+1]],
-                                 [self.data[y+1][x-1], self.data[y+1][x], self.data[y+1][x+1]]]
-                if not nms(self.angles[y][x], surround):  # Checks if it the maximum pixel
+                srnd = surround(self.data, x, y)
+                if not nms(self.angles[y][x], srnd):  # Checks if it is the maximum pixel
                     self.data[y][x] = 0  # Sets to zero if not
 
     def dblthresh(self, low, high):  # Runs double thresholding on each pixel
@@ -77,11 +85,28 @@ class Edges(Arr2d):
             for x in range(1, self.width - 1):
                 px = self.data[y][x]
                 if px > high:
-                    self.data[y][x] = 1  # High value (strong) pixels are set to white
+                    self.data[y][x] = self.strongval  # High value (strong) pixels are set to white
                 elif px > low:
-                    self.data[y][x] = 0.4  # Mid value (weak) pixels are set to grey
+                    self.data[y][x] = self.weakval  # Mid value (weak) pixels are set to grey
                 else:
-                    self.data[y][x] = 0  # Low value (irrelevant) pixels are set to black
+                    self.data[y][x] = self.irrval  # Low value (irrelevant) pixels are set to black
+                    
+    def hysteresis(self):  # Runs hysteresis tracking on each pixel
+        for y in range(1, self.height - 1):
+            for x in range(1, self.width - 1):
+                px = self.data[y][x]
+                if px == self.weakval:  # Checks if pixel is weak
+                    srnd = surround(self.data, x, y).flatten()
+                    if 1 in srnd:  # If strong pixel in surroundings then mark current pixel as strong
+                        self.data[y][x] = self.strongval
+                    else:
+                        self.data[y][x] = self.irrval
+
+
+
+
+                
+        
 
 
 class SymMat(Arr2d):

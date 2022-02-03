@@ -12,7 +12,7 @@ def main():
             matrix operations and a machine learning network to identify(classify) an image of a road sign.
             #-#-#-#-#-#-#-#-#-#-#
             """)
-    prog = Program
+    # prog = Program
 
 
 def test():
@@ -24,7 +24,8 @@ def test():
     testegs.xedges.display()
     testegs.yedges.display()
     testegs.display()
-    print(testegs.angles)
+    testegs.nonmax()
+    testegs.display()
 
 
 

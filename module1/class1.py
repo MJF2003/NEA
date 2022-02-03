@@ -2,6 +2,7 @@ from func import *
 from math import pi, exp, atan
 
 
+
 def gauss(x, y, sigma):
     return 1 / (2 * pi * (sigma ** 2)) * exp(-((x ** 2 + y ** 2) / (2 * (sigma ** 2))))
 
@@ -25,7 +26,16 @@ def sobely():
 
 
 def nms(angle, srnd):
-    pass
+    to_check = [
+        ((2, 1), (0, 1)),
+        ((0, 0), (2, 2)),
+        ((1, 0), (1, 2)),
+        ((2, 0), (0, 2))
+    ]
+    idx = int((pi + angle)/(pi/4)) % 4
+    if srnd.data[1][1] < srnd.xy(*to_check[idx][0]) or srnd.data[1][1] < srnd.xy(*to_check[idx][1]):
+        return False
+    return True
 
 
 class Edges(Arr2d):
@@ -57,7 +67,8 @@ class Edges(Arr2d):
                 surround.data = [[self.data[y-1][x-1], self.data[y-1][x], self.data[y-1][x+1]],
                                  [self.data[y][x-1], self.data[y][x], self.data[y][x+1]],
                                  [self.data[y+1][x-1], self.data[y+1][x], self.data[y+1][x+1]]]
-                nms(self.angles[y][x], surround.data)
+                if not nms(self.angles[y][x], surround):
+                    self.data[y][x] = 0
 
 
 

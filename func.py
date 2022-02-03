@@ -101,8 +101,8 @@ class Program:
     def menu(self):
         menu = {
             "1": ("Load File", self.loadfile(self.getpath())),
-            "2": ("Plot File", self.plotfile()),
-            "3": ("Edge Detect", self.edgedetect())
+            "2": ("Plot File", self.plotfile),
+            "3": ("Edge Detect", self.edgedetect)
         }
 
         for key, value in menu.items():

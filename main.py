@@ -26,6 +26,8 @@ def test():
     testegs.display()
     testegs.nonmax()
     testegs.display()
+    testegs.dblthresh(0.37, 0.63)
+    testegs.display()
 
 
 

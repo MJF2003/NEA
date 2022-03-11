@@ -89,4 +89,3 @@ class Image(func.Arr2d):
         rows = lstsplit(self.pixelsraw, self.file.header.swidth + xpadding)[::-1]
         rgbpixels = list(map(lambda row: lstsplit(row[:len(row) - xpadding], int(self.file.header.depth / 8)), rows))
         self.data = [list(map(indivgs, row)) for row in rgbpixels]
-

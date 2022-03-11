@@ -53,13 +53,13 @@ class Edges(Arr2d):
         self.xedges.data = convolve(image, sobelx())
         self.yedges = Arr2d(image.width, image.height)
         self.yedges.data = convolve(image, sobely())
-        self.data, self.angles = self.assemble()
+        self.data, self.angles = self.compound()
         self.strongval = 1
         self.weakval = 0.4
         self.irrval = 0
 
 
-    def assemble(self):
+    def compound(self):
         magn = Arr2d(self.width, self.height)  # Assesses the magnitude of each pixel in the edge array
         angs = Arr2d(self.width, self.height)  # Assesses the angle of each edge to the nearest pi/4 window
         for y in range(self.height):
@@ -103,14 +103,7 @@ class Edges(Arr2d):
                         self.data[y][x] = self.irrval
 
 
-
-
-                
-        
-
-
 class SymMat(Arr2d):
     def __init__(self, size):
         super().__init__(size, size)
         self.mid = (size - (size % 2)) / 2  # Allows int mid value for both odd and even sizes
-

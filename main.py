@@ -26,7 +26,7 @@ def test():
     testegs.display("Full Edges")
     testegs.nonmax()
     testegs.display("Non-Maximum Supression")
-    testegs.dblthresh(0.33, 0.66)
+    testegs.dblthresh(0.33, 0.67)
     testegs.display("Double Thresholding")
     testegs.hysteresis()
     testegs.display("Hysteresis Tracking")

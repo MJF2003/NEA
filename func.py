@@ -4,7 +4,8 @@ from matplotlib.pyplot import imshow, show, title
 
 
 
-def valid(vtype: str, ipt, comp) -> bool:
+def valid(vtype: str, ipt, comp=None) -> bool:
+
     if vtype == "EQ":
         return ipt == comp
     elif vtype == "GT":

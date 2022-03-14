@@ -1,4 +1,5 @@
 import keras
+from matplotlib import pyplot as plt
 
 from func import *
 import numpy as np
@@ -75,6 +76,8 @@ model = keras.Sequential([
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
+
+
 
 epochs = 25
 history = model.fit(

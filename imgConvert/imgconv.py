@@ -1,9 +1,10 @@
 from PIL import Image
+from pathlib import Path
 
+path = Path("../testImages")
+name = "30mph.jfif"
 
-path = "C:\\Users\\Michael Fahey\\PycharmProjects\\NEA\\testImages"
-name = "ageas-roadsigns-.png"
+file_loc = path / name
 
-im = Image.open(f"{path}\\{name}")
-im.save(f"../testImages/{name}.bmp")
-
+im = Image.open(file_loc)
+im.save(f"../testImages/{name.split('.')[0]}.bmp")

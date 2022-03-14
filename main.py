@@ -16,7 +16,7 @@ def main():
 
 
 def test():
-    testimg = Image("testImages/images.bmp")
+    testimg = Image("testImages/30mph.bmp")
     testimg.display("Initial Image")
     testimg.data = convolve(testimg, gaussian_kernel(5, sigma=1.2))
     testimg.display("Gaussian Blur")
@@ -26,10 +26,14 @@ def test():
     testegs.display("Full Edges")
     testegs.nonmax()
     testegs.display("Non-Maximum Supression")
-    testegs.dblthresh(0.33, 0.67)
+    testegs.dblthresh(0.33, 0.55)
     testegs.display("Double Thresholding")
     testegs.hysteresis()
     testegs.display("Hysteresis Tracking")
+    for y in range(testegs.height):
+        for x in range(testegs.width):
+            testegs.data[y][x] = 1 - testegs.data[y][x]
+    testegs.display("Inverted")
 
 
 

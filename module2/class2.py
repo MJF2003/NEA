@@ -16,7 +16,7 @@ from keras.preprocessing.image import array_to_img
 
 data_dir = pathlib.Path("../data")  # Location of the dataset
 
-batch_size = 3
+batch_size = 4
 img_height = 100
 img_width = 100
 
@@ -80,7 +80,6 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-model.summary()
 
 epochs = 30
 history = model.fit(
@@ -88,3 +87,5 @@ history = model.fit(
     validation_data=val_ds,
     epochs=epochs
 )
+
+

@@ -14,7 +14,7 @@ from keras import layers
 from keras.preprocessing.image import array_to_img
 
 
-data_dir = pathlib.Path("../data")  # Location of the dataset
+data_dir = pathlib.Path("data")  # Location of the dataset
 
 batch_size = 4
 img_height = 100
@@ -64,11 +64,11 @@ num_classes = len(class_names)  # Number of possible classes the images could fa
 model = keras.Sequential([
     resize_rescale,
     data_augmentation,
-    layers.Conv2D(16, 3, padding='same', activation='sigmoid'),
-    layers.MaxPooling2D(),
-    layers.Conv2D(32, 3, padding='same', activation='sigmoid'),
-    layers.MaxPooling2D(),
     layers.Conv2D(64, 3, padding='same', activation='sigmoid'),
+    layers.MaxPooling2D(),
+    layers.Conv2D(128, 3, padding='same', activation='sigmoid'),
+    layers.MaxPooling2D(),
+    layers.Conv2D(256, 3, padding='same', activation='sigmoid'),
     layers.MaxPooling2D(),
     layers.Flatten(),
     layers.Dense(128, activation='relu'),
@@ -81,11 +81,6 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 
-epochs = 30
-history = model.fit(
-    train_ds,
-    validation_data=val_ds,
-    epochs=epochs
-)
+
 
 

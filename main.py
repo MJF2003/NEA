@@ -1,8 +1,7 @@
 from func import *
 from module0.class0 import *
 from module1.class1 import *
-
-
+from module2.class2 import *
 
 
 def main():
@@ -37,6 +36,23 @@ def test():
         for x in range(testegs.width):
             testegs.data[y][x] = 1 - testegs.data[y][x]
     testegs.display("Inverted")
+    epochs = 10
+    history = model.fit(
+        train_ds,
+        validation_data=val_ds,
+        epochs=epochs
+    )
+
+    img = np.ndarray(testegs.data).resize((100, 100))
+    img_array = tf.expand_dims(img, 0)  # Create a batch
+
+    predictions = model.predict(img_array)
+    score = tf.nn.softmax(predictions[0])
+
+    print(
+        "This image most likely belongs to {} with a {:.2f} percent confidence."
+            .format(class_names[np.argmax(score)], 100 * np.max(score))
+    )
 
 
 

@@ -102,6 +102,11 @@ class Edges(Arr2d):
                     else:
                         self.data[y][x] = self.irrval
 
+    def invert(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                self.data[y][x] = 1 - self.data[y][x]
+
 
 class SymMat(Arr2d):
     def __init__(self, size):

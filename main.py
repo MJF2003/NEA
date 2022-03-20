@@ -3,22 +3,39 @@ from module0.class0 import *
 from module1.class1 import *
 from module2.class2 import *
 
+from UI.pys.template import *
+from PyQt5.QtWidgets import *
+
+import sys
+import numpy as np
+import PIL.Image
+
+
 
 def main():
-    print(
-        """
-        Welcome to Michael Fahey's A-Level Computer Science NEA.
-        
-        This project is an image processing project which uses 
-        matrix operations and a machine learning network to identify(classify) an image of a road sign.
-        #-#-#-#-#-#-#-#-#-#-#
-        """
-    )
-    # prog = Program
+    app = QApplication(sys.argv)
+
+    window = QDialog()
+    ui = Ui_templateScreen()
+    ui.setupUi(window)
+
+    window.show()
+    sys.exit(app.exec_())
+
+
+def full_edges(path):
+    img = Image(path)
+    img.data = convolve(img, gaussian_kernel(5, sigma=1.2))
+    edges = Edges(img)
+    edges.nonmax()
+    edges.dblthresh(0.3, 0.45)
+    edges.hysteresis()
+    edges.invert()
+    return edges
 
 
 def test():
-    testimg = Image("testImages/30mph.bmp")
+    testimg = Image("testImages/myNSL.bmp")
     testimg.display("Initial Image")
     testimg.data = convolve(testimg, gaussian_kernel(5, sigma=1.2))
     testimg.display("Gaussian Blur")
@@ -28,34 +45,37 @@ def test():
     testegs.display("Full Edges")
     testegs.nonmax()
     testegs.display("Non-Maximum Supression")
-    testegs.dblthresh(0.33, 0.55)
+    testegs.dblthresh(0.3, 0.45)
     testegs.display("Double Thresholding")
     testegs.hysteresis()
     testegs.display("Hysteresis Tracking")
-    for y in range(testegs.height):
-        for x in range(testegs.width):
-            testegs.data[y][x] = 1 - testegs.data[y][x]
+    testegs.invert()
     testegs.display("Inverted")
-    epochs = 10
+
+    model, train_ds, val_ds, class_names = build_model()
+
+    epochs = 50
     history = model.fit(
         train_ds,
         validation_data=val_ds,
         epochs=epochs
     )
 
-    img = np.ndarray(testegs.data).resize((100, 100))
-    img_array = tf.expand_dims(img, 0)  # Create a batch
+    # rawimg = PIL.Image.open("testImages/nsl_test.png")
 
-    predictions = model.predict(img_array)
+    img = np.array(testegs.data)
+    img = np.resize(img, (48, 48, 3))
+    img = tf.expand_dims(img, 0)
+
+
+    predictions = model.predict(img)
     score = tf.nn.softmax(predictions[0])
+    print(score)
 
     print(
-        "This image most likely belongs to {} with a {:.2f} percent confidence."
-            .format(class_names[np.argmax(score)], 100 * np.max(score))
+        f"""This image most likely belongs to {class_names[np.argmax(score)]} 
+        with a {100 * np.max(score):.2f} percent confidence."""
     )
-
-
-
 
 
 if __name__ == "__main__":

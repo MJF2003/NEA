@@ -3,15 +3,19 @@ from matplotlib import pyplot as plt
 
 from func import *
 import pathlib
+import numpy as np
 import tensorflow as tf
 
 
-def build_model():
-    data_dir = pathlib.Path("data")  # Location of the dataset
+my_classes = ['natspdlim', 'rdnarrows', 'thirtymph']
 
-    batch_size = 4
-    img_height = 48
-    img_width = 48
+
+def build_model():
+    data_dir = pathlib.Path("data/classified")  # Location of the dataset
+
+    batch_size = 16
+    img_height = 100
+    img_width = 100
 
     # Extract Datasets from directory
     train_ds = tf.keras.utils.image_dataset_from_directory(  # Define the training set from the directory
@@ -31,8 +35,7 @@ def build_model():
         batch_size=batch_size
     )
 
-    class_names = train_ds.class_names  # Returns a list of the classnames defined by subdirectory titles
-    num_classes = len(class_names)  # Number of possible classes the images could fall into
+    num_classes = len(my_classes)  # Number of possible classes the images could fall into
 
     resize_rescale = tf.keras.Sequential([  # Resizing the dataset components to square and correct size
         tf.keras.layers.Resizing(img_height, img_width),
@@ -53,8 +56,6 @@ def build_model():
     model = tf.keras.Sequential([
         resize_rescale,
         data_augmentation,
-        tf.keras.layers.Conv2D(16, 3, padding='same', activation='relu'),
-        tf.keras.layers.MaxPooling2D(),
         tf.keras.layers.Conv2D(32, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
         tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
@@ -69,4 +70,31 @@ def build_model():
     model.compile(optimizer='adam',
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
-    return model, train_ds, val_ds, class_names
+    return model, train_ds, val_ds
+
+
+def train(model, train_ds, val_ds, save_loc):
+    epochs = 50
+    model.fit(
+        train_ds,
+        validation_data=val_ds,
+        epochs=epochs
+    )
+
+    model.save(save_loc)
+
+
+def load_model(path):
+    model = tf.keras.models.load_model(path)
+    return model
+
+
+def pred_img(array, model, class_names):
+    predictions = model.predict(array)
+    score = tf.nn.softmax(predictions[0])
+
+    return f"""This image most likely belongs to {class_names[np.argmax(score)]} 
+        with a {100 * np.max(score):.2f} percent confidence."""
+
+
+train(*build_model(), save_loc='my_model')

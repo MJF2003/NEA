@@ -1,4 +1,3 @@
-from func import *
 from module0.class0 import *
 from module1.class1 import *
 from module2.class2 import *
@@ -28,14 +27,14 @@ def full_edges(path):
     img.data = convolve(img, gaussian_kernel(5, sigma=1.2))
     edges = Edges(img)
     edges.nonmax()
-    edges.dblthresh(0.3, 0.45)
+    edges.dblthresh(0.3, 0.3)
     edges.hysteresis()
     edges.invert()
     return edges
 
 
 def test():
-    testimg = Image("testImages/myNSL.bmp")
+    testimg = Image("data/classified/thirtymph/101.bmp")
     testimg.display("Initial Image")
     testimg.data = convolve(testimg, gaussian_kernel(5, sigma=1.2))
     testimg.display("Gaussian Blur")
@@ -45,37 +44,24 @@ def test():
     testegs.display("Full Edges")
     testegs.nonmax()
     testegs.display("Non-Maximum Supression")
-    testegs.dblthresh(0.3, 0.45)
+    testegs.dblthresh(0.3, 0.3)
     testegs.display("Double Thresholding")
     testegs.hysteresis()
     testegs.display("Hysteresis Tracking")
     testegs.invert()
     testegs.display("Inverted")
 
-    model, train_ds, val_ds, class_names = build_model()
 
-    epochs = 50
-    history = model.fit(
-        train_ds,
-        validation_data=val_ds,
-        epochs=epochs
-    )
-
-    # rawimg = PIL.Image.open("testImages/nsl_test.png")
+    # rawimg = PIL.Image.open("testImages/")
 
     img = np.array(testegs.data)
-    img = np.resize(img, (48, 48, 3))
+    img = np.resize(img, (100, 100, 3))
     img = tf.expand_dims(img, 0)
 
 
-    predictions = model.predict(img)
-    score = tf.nn.softmax(predictions[0])
-    print(score)
+    pred_img(img, load_model('my_model'), my_classes)
 
-    print(
-        f"""This image most likely belongs to {class_names[np.argmax(score)]} 
-        with a {100 * np.max(score):.2f} percent confidence."""
-    )
+
 
 
 if __name__ == "__main__":

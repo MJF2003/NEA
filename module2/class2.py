@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 
 
-data_dir = pathlib.Path("data/raw_egs")  # Location of the dataset
+data_dir = pathlib.Path("data/classified_edges")  # Location of the dataset
 
 batch_size = 16
 img_height = 100

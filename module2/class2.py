@@ -1,4 +1,3 @@
-
 from matplotlib import pyplot as plt
 
 from func import *
@@ -7,15 +6,15 @@ import numpy as np
 import tensorflow as tf
 
 
-my_classes = ['natspdlim', 'rdnarrows', 'thirtymph']
+data_dir = pathlib.Path("data/classified")  # Location of the dataset
+
+batch_size = 16
+img_height = 100
+img_width = 100
 
 
-def build_model():
-    data_dir = pathlib.Path("data/classified")  # Location of the dataset
 
-    batch_size = 16
-    img_height = 100
-    img_width = 100
+def build_model():  # A very procedural function to assemble an ML model
 
     # Extract Datasets from directory
     train_ds = tf.keras.utils.image_dataset_from_directory(  # Define the training set from the directory
@@ -35,6 +34,7 @@ def build_model():
         batch_size=batch_size
     )
 
+    my_classes = train_ds.class_names
     num_classes = len(my_classes)  # Number of possible classes the images could fall into
 
     resize_rescale = tf.keras.Sequential([  # Resizing the dataset components to square and correct size
@@ -46,7 +46,7 @@ def build_model():
         tf.keras.layers.RandomRotation(0.2),
     ])
 
-    # Start of Optimisation Features
+    # Start of Optimisation Features as described by tensorflow docs
     AUTOTUNE = tf.data.AUTOTUNE
     train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
     val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
@@ -97,4 +97,14 @@ def pred_img(array, model, class_names):
         with a {100 * np.max(score):.2f} percent confidence."""
 
 
-train(*build_model(), save_loc='my_model')
+def get_classes():
+    train_ds = tf.keras.utils.image_dataset_from_directory(  # Define the training set from the directory
+        data_dir,
+        validation_split=0.2,
+        color_mode="grayscale",
+        subset="training",
+        seed=123,
+        image_size=(img_height, img_width),
+        batch_size=batch_size
+    )
+    return train_ds.class_names

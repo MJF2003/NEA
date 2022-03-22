@@ -1,6 +1,7 @@
 from module0.class0 import *
 from module1.class1 import *
 from module2.class2 import *
+from func import *
 
 from UI.pys.template import *
 from PyQt5.QtWidgets import *
@@ -34,7 +35,7 @@ def full_edges(path):
 
 
 def test():
-    testimg = Image("data/classified/thirtymph/101.bmp")
+    testimg = Image("data/classified/rdnarrows/73.bmp")
     testimg.display("Initial Image")
     testimg.data = convolve(testimg, gaussian_kernel(5, sigma=1.2))
     testimg.display("Gaussian Blur")
@@ -58,9 +59,9 @@ def test():
     img = np.resize(img, (100, 100, 3))
     img = tf.expand_dims(img, 0)
 
+    # train(*build_model(), save_loc='my_model')
 
-    pred_img(img, load_model('my_model'), my_classes)
-
+    print(pred_img(img, load_model('my_model'), get_classes()))
 
 
 

@@ -28,42 +28,25 @@ def full_edges(path):
     img.data = convolve(img, gaussian_kernel(5, sigma=1.2))
     edges = Edges(img)
     edges.nonmax()
-    edges.dblthresh(0.25, 0.3)
+    edges.dblthresh(0.25, 0.27)
+    edges.hysteresis()
     edges.hysteresis()
     edges.invert()
+    edges.display("Output")
     return edges
 
 
 def test():
-    testimg = Image("data/classified/rdnarrows/73.bmp")
-    testimg.display("Initial Image")
-    testimg.data = convolve(testimg, gaussian_kernel(5, sigma=1.2))
-    testimg.display("Gaussian Blur")
-    testegs = Edges(testimg)
-    testegs.xedges.display("X Edges")
-    testegs.yedges.display("Y Edges")
-    testegs.display("Full Edges")
-    testegs.nonmax()
-    testegs.display("Non-Maximum Supression")
-    testegs.dblthresh(0.3, 0.3)
-    testegs.display("Double Thresholding")
-    testegs.hysteresis()
-    testegs.display("Hysteresis Tracking")
-    testegs.invert()
-    testegs.display("Inverted")
-
-
-    # rawimg = PIL.Image.open("testImages/")
-
-    img = np.array(testegs.data)
+    # rawimg = PIL.Image.open("testImages/myNSL.bmp")
+    img = np.array(full_edges("testImages/myNSL.bmp").data)
     img = np.resize(img, (100, 100, 3))
     img = tf.expand_dims(img, 0)
 
-    # train(*build_model(), save_loc='my_model')
+    train(*build_model(), save_loc='my_model')
 
     print(pred_img(img, load_model('my_model'), get_classes()))
 
 
 
 if __name__ == "__main__":
-    full_edges("data/classified/thirtymph/30.bmp").display("Output")
+    test()

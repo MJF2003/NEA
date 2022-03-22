@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 
 
-data_dir = pathlib.Path("data/classified")  # Location of the dataset
+data_dir = pathlib.Path("data/raw_egs")  # Location of the dataset
 
 batch_size = 16
 img_height = 100
@@ -56,13 +56,14 @@ def build_model():  # A very procedural function to assemble an ML model
     model = tf.keras.Sequential([
         resize_rescale,
         data_augmentation,
+
         tf.keras.layers.Conv2D(32, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
         tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(32, activation='relu'),
         tf.keras.layers.Dense(num_classes)
     ])
     # End of main model
@@ -93,7 +94,7 @@ def pred_img(array, model, class_names):
     predictions = model.predict(array)
     score = tf.nn.softmax(predictions[0])
 
-    return f"""This image most likely belongs to {class_names[np.argmax(score)]} 
+    return score, f"""This image most likely belongs to {class_names[np.argmax(score)]} 
         with a {100 * np.max(score):.2f} percent confidence."""
 
 

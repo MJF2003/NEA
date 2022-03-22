@@ -78,15 +78,17 @@ class Program:
 
 
     def menu(self):
+        print("\n")
         for key, value in self.menu_dict.items():
             print(f"{key:<5}: {value[0]:<20}")
+        print("\n")
 
         self.option = input("Enter a number from the list above: ")
         while not valid("DG", self.option):
             self.error("That wasn't a number", "User Fault", status=0)
             self.option = input("Enter a number from the list above: ")
 
-        self.menu_dict[self.option]()
+        self.menu_dict[self.option][1]()
         if not self.option == -1:
             self.__init__()
 
@@ -129,6 +131,7 @@ class Program:
         pass
 
     def print_log(self):
+        print("Program log is as follows:")
         for errno, error in enumerate(self.log):
             print(f"{errno}) - {error:<20}")
 
@@ -145,7 +148,8 @@ def main():
             on the repo if you come across anything not working.
     """
     print(welcome)
-    prog = Program
+    prog = Program()
+    print("Thank you for using the program - Michael")
 
 
 if __name__ == "__main__":

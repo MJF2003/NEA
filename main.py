@@ -28,7 +28,7 @@ def full_edges(path):
     img.data = convolve(img, gaussian_kernel(5, sigma=1.2))
     edges = Edges(img)
     edges.nonmax()
-    edges.dblthresh(0.3, 0.3)
+    edges.dblthresh(0.25, 0.3)
     edges.hysteresis()
     edges.invert()
     return edges
@@ -66,4 +66,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    full_edges("data/classified/thirtymph/30.bmp").display("Output")

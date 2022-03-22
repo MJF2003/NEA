@@ -1,11 +1,11 @@
 import copy
 from datetime import datetime as dt
 from matplotlib.pyplot import imshow, show, title
+from pathlib import Path
 
 
-
+# General Purpose validity checker
 def valid(vtype: str, ipt, comp=None) -> bool:
-
     if vtype == "EQ":
         return ipt == comp
     elif vtype == "GT":
@@ -21,8 +21,6 @@ def valid(vtype: str, ipt, comp=None) -> bool:
 
 
 # # # # # # # # # # # # General 2D Array Class Definition # # # # # # # # # # # #
-
-
 def convolve(image, kn):
     ckn = copy.deepcopy(kn)
     pad = int(ckn.mid)
@@ -63,14 +61,13 @@ class Arr2d:  # General 2D Array Class with common methods
         title(str(titlestr))
         show()
 
-    def asciiart(self):
+    def asciiart(self, file_loc):  # Writes ASCII art of the image to a file
         reps = ["$", "@", "B", "%", "8", "&", "W", "M", "#", "*", "o", "a", "h", "k", "b", "d", "p", "q", "w", "m",
-                "Z",
-                "O", "0", "Q", "L", "C", "J", "U", "Y", "X", "z", "c", "v", "u", "n", "x", "r", "j", "f", "t", "/",
-                "\\", "|", "(", ")", "1", "{", "}", "[", "]", "?", "-", "_", "+", "~", "<", ">", "i", "!", "l", "I",
-                ";", ":", "\"", "^", "`", "'", ".", " "]
-        filename = f"{dt.now().year}-{dt.now().month}-{dt.now().day}-{str(dt.now().hour).zfill(2)}\
-{str(dt.now().minute).zfill(2)}{str(dt.now().second).zfill(2)}.txt"
+                "Z", "O", "0", "Q", "L", "C", "J", "U", "Y", "X", "z", "c", "v", "u", "n", "x", "r", "j", "f", "t",
+                "/", "\\", "|", "(", ")", "1", "{", "}", "[", "]", "?", "-", "_", "+", "~", "<", ">", "i", "!", "l",
+                "I", ";", ":", "\"", "^", "`", "'", ".", " "]
+        filename = Path(file_loc / f"{dt.now().year}-{dt.now().month}-{dt.now().day}-{str(dt.now().hour).zfill(2)}\
+{str(dt.now().minute).zfill(2)}{str(dt.now().second).zfill(2)}.txt")
         with open(filename, "a") as f:
             for row in self.data:
                 f.write("".join([reps[round(px * len(reps)) - 1] for px in row]))
@@ -78,52 +75,3 @@ class Arr2d:  # General 2D Array Class with common methods
 
 
 # # # # # # # # # # # # End of General 2D Array Class Definition # # # # # # # # # # # #
-
-
-class Program:
-    def __init__(self):
-        self.fileloaded = False
-        self.status = "Initialising..."
-        self.option = -1
-        self.menu()
-
-    def error(self, message: str, level):  # Error Display Program
-        print(message)
-        if level == 3:
-            self.status = "Level 3 Error..."
-            self.__init__()
-        elif level == 2:
-            self.status = "Level 2 Error..."
-        elif level == 1:
-            self.status = "Level 1 Error..."
-        else:
-            self.status = "Unknown Error"
-        print(self.status)
-
-    def menu(self):
-        menu = {
-            "1": ("Load File", self.loadfile(self.getpath())),
-            "2": ("Plot File", self.plotfile),
-            "3": ("Edge Detect", self.edgedetect)
-        }
-
-        for key, value in menu.items():
-            print(f"{key:<5}: {value[0]:<20}")
-
-        option = input("Enter a number from the list above: ")
-        while not valid("DG", option):
-            option = input("Enter a number from the list above: ")
-        print(self.status)
-
-    def getpath(self):
-        pass
-
-    def loadfile(self, path):
-        pass
-
-    def plotfile(self):
-        pass
-
-    def edgedetect(self):
-        pass
-

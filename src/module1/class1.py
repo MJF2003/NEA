@@ -1,4 +1,4 @@
-from func import *
+from src.func import *
 from math import pi, exp, atan
 
 

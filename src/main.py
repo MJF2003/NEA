@@ -1,14 +1,6 @@
-from module0.class0 import *
-from module1.class1 import *
-from module2.class2 import *
 from func import *
 
-
-import sys
 import numpy as np
-import PIL.Image
-
-
 
 
 def full_edges(path):
@@ -32,15 +24,16 @@ def test():
 
     train(*build_model(), save_loc='my_model')
 
-    print(pred_img(img, load_model('my_model'), get_classes()))
+    print(pred_img(img, load_model('src/my_model'), get_classes()))
 
 
 class Program:
     def __init__(self):
         self.fileloaded = False
+        self.Edges = False
         self.log = ["Initialising..."]
         self.option = -1
-        self.menu_dict = {
+        self.menu_dict = {  # Menu of all testing interface functions
             "1": ("Load File", self.pg_loadfile),
             "2": ("Plot File", self.pg_plotfile),
             "3": ("Gaussian Blur", self.pg_gauss),
@@ -56,11 +49,11 @@ class Program:
             "13": ("Print program log", self.print_log),
             "14": ("Exit the Program", self.exit)
         }
-        self.menu()
+        self.menu()  # Display menu upon program initialising
 
     def error(self, message: str, status: str, level: int):  # Error Display Program
         print(message)
-        if level == 1:
+        if level == 1:  # 1 indicates a fatal error causing the program to reset. Otherwise, it just adds it to the log
             print("RESTARTING...")
             self.log.append(f"Fatal Error - {status}")
             self.__init__()
@@ -74,7 +67,7 @@ class Program:
         if file_path.is_file():
             return file_path
         else:
-            self.error("File cannot be accessed", "File Handler", status=1)
+            self.error("File does not exist", "File Handler", status=1)
 
 
     def menu(self):
@@ -87,18 +80,38 @@ class Program:
         while not valid("DG", self.option):
             self.error("That wasn't a number", "User Fault", status=0)
             self.option = input("Enter a number from the list above: ")
-
-        self.menu_dict[self.option][1]()
+        try:
+            self.menu_dict[self.option][1]()
+        except:
+            self.error("Unknown Fatal Error occured - Resetting program...", "Unknown Runtime Error", 1)
         if not self.option == -1:
-            self.__init__()
+            self.menu()
 
     # Menu Function Handler #
 
     def pg_loadfile(self):
-        pass
+        if self.fileloaded is not False:
+            fl_check = input("File is already loaded. "
+                             "Loading will overwrite the file currently loaded.\nDo you want to continue (Y/N)? ")
+            try:
+                if fl_check.upper() != "Y":
+                    return None
+            except ValueError:
+                self.error("Non-String was entered", "Input Error", 0)
+                return None
+        while 1:
+            intended_path = self.get_path(
+                input("Enter the path of the file you would like to load referenced from the NEA root "
+                      "folder: "))
+            if not intended_path.suffix == '.bmp':
+                self.error("File is of wrong type", "File Type", 0)
+            else:
+                self.fileloaded = intended_path
+
 
     def pg_plotfile(self):
-        pass
+        if not self.fileloaded:
+            self.error("File has not been loaded", "Sequence Error")
 
     def pg_asciiart(self):
         pass

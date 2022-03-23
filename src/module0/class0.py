@@ -1,4 +1,4 @@
-import func
+from src import func
 
 
 # # # # # # # # # # # # # # # General Function Definitions # # # # # # # # # # # # # # #

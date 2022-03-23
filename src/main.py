@@ -1,4 +1,7 @@
 from func import *
+from module2.class2 import *
+from module1.class1 import *
+from module0.class0 import *
 
 import numpy as np
 
@@ -17,14 +20,13 @@ def full_edges(path):
 
 
 def test():
-    # rawimg = PIL.Image.open("testImages/myNSL.bmp")
-    img = np.array(full_edges("testImages/myNSL.bmp").data)
+    img = np.array(full_edges("testImages/30mph.bmp").data)
     img = np.resize(img, (100, 100, 3))
     img = tf.expand_dims(img, 0)
 
-    train(*build_model(), save_loc='my_model')
+    train(*build_model(Path('data/classified_edges')), save_loc='my_model', epochs=55)
 
-    print(pred_img(img, load_model('src/my_model'), get_classes()))
+    print(pred_img(img, load_model(Path('my_model')), class_names))
 
 
 class Program:
@@ -166,4 +168,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()

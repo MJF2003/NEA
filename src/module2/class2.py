@@ -1,21 +1,19 @@
-import pathlib
+from pathlib import Path
 import numpy as np
 import tensorflow as tf
 
-
-data_dir = pathlib.Path("data/classified_edges")  # Location of the dataset
-
+# Defining constants
 batch_size = 16
 img_height = 100
 img_width = 100
+class_names = ['natspdlim', 'rdnarrows', 'thirtymph']
 
 
-
-def build_model():  # A very procedural function to assemble an ML model
+def build_model(dataset_loc: Path):  # A very procedural function to assemble an ML model
 
     # Extract Datasets from directory
     train_ds = tf.keras.utils.image_dataset_from_directory(  # Define the training set from the directory
-        data_dir,
+        dataset_loc,
         validation_split=0.2,
         subset="training",
         seed=123,
@@ -23,7 +21,7 @@ def build_model():  # A very procedural function to assemble an ML model
         batch_size=batch_size
     )
     val_ds = tf.keras.utils.image_dataset_from_directory(  # Same but for validation
-        data_dir,
+        dataset_loc,
         validation_split=0.2,
         subset="validation",
         seed=123,
@@ -71,38 +69,23 @@ def build_model():  # A very procedural function to assemble an ML model
     return model, train_ds, val_ds
 
 
-def train(model, train_ds, val_ds, save_loc):
-    epochs = 50
+def train(model, train_ds, val_ds, save_loc, epochs):
     model.fit(
         train_ds,
         validation_data=val_ds,
         epochs=epochs
     )
-
     model.save(save_loc)
 
 
-def load_model(path):
-    model = tf.keras.models.load_model(path)
+def load_model(model_path: Path):
+    model = tf.keras.models.load_model(model_path)
     return model
 
 
-def pred_img(array, model, class_names):
+def pred_img(array, model, lcl_classes):
     predictions = model.predict(array)
     score = tf.nn.softmax(predictions[0])
 
-    return score, f"""This image most likely belongs to {class_names[np.argmax(score)]} 
+    return score, f"""This image most likely belongs to {lcl_classes[np.argmax(score)]} 
         with a {100 * np.max(score):.2f} percent confidence."""
-
-
-def get_classes():
-    train_ds = tf.keras.utils.image_dataset_from_directory(  # Define the training set from the directory
-        data_dir,
-        validation_split=0.2,
-        color_mode="grayscale",
-        subset="training",
-        seed=123,
-        image_size=(img_height, img_width),
-        batch_size=batch_size
-    )
-    return train_ds.class_names

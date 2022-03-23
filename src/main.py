@@ -31,7 +31,7 @@ def test():
 
 class Program:
     def __init__(self):
-        self.fileloaded = False
+        self.fileloaded : Image = Image(None)
         self.Edges = False
         self.log = ["Initialising..."]
         self.option = -1
@@ -64,12 +64,13 @@ class Program:
 
 
     def get_path(self, path_from_root):  # Any system file path handler
-        root = Path(__file__).parent
-        file_path = root / path_from_root
-        if file_path.is_file():
+        root = Path(__file__).parent.parent
+        file_path = root / Path(path_from_root)
+        print(file_path)
+        if file_path.exists():
             return file_path
         else:
-            self.error("File does not exist", "File Handler", status=1)
+            return "BadPath"
 
 
     def menu(self):
@@ -82,17 +83,17 @@ class Program:
         while not valid("DG", self.option):
             self.error("That wasn't a number", "User Fault", status=0)
             self.option = input("Enter a number from the list above: ")
-        try:
-            self.menu_dict[self.option][1]()
-        except:
-            self.error("Unknown Fatal Error occured - Resetting program...", "Unknown Runtime Error", 1)
+        #try:
+        self.menu_dict[self.option][1]()
+        #except:
+        #    self.error("Unknown Fatal Error occured", "Unknown Runtime Error", 1)
         if not self.option == -1:
             self.menu()
 
     # Menu Function Handler #
 
     def pg_loadfile(self):
-        if self.fileloaded is not False:
+        if self.fileloaded.filename is not None:
             fl_check = input("File is already loaded. "
                              "Loading will overwrite the file currently loaded.\nDo you want to continue (Y/N)? ")
             try:
@@ -105,15 +106,21 @@ class Program:
             intended_path = self.get_path(
                 input("Enter the path of the file you would like to load referenced from the NEA root "
                       "folder: "))
-            if not intended_path.suffix == '.bmp':
+            if intended_path == "BadPath":
+                self.error("File does not exist", "File Existence", 0)
+            elif intended_path.suffix != '.bmp':
                 self.error("File is of wrong type", "File Type", 0)
             else:
-                self.fileloaded = intended_path
+                self.fileloaded = Image(intended_path)
+                print("File was loaded!")
+                break
 
 
     def pg_plotfile(self):
         if not self.fileloaded:
-            self.error("File has not been loaded", "Sequence Error")
+            self.error("File has not been loaded", "Sequence Error", 0)
+            return None
+        self.fileloaded.display("Raw Loaded Image")
 
     def pg_asciiart(self):
         pass
@@ -160,12 +167,11 @@ def main():
             I am Michael Fahey (7407) and my NEA is all about detecting road signs. 
             
             You can see the full writeup on my GitHub. I obviously hope everything works but please raise an issue
-            on the repo if you come across anything not working.
-    """
+            on the repo if you come across anything not working."""
     print(welcome)
     prog = Program()
     print("Thank you for using the program - Michael")
 
 
 if __name__ == "__main__":
-    test()
+    main()

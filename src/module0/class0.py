@@ -23,7 +23,6 @@ def lstsplit(array, split: int):  # Split a list at a given interval
 
 
 class Header:  # Header object created by file at file import containing all relevant file details
-    # Predominantly for testing
     def __init__(self):
         self.type = "UNSET"  # Should be set to BM
         self.size = -1  # An integer in bytes
@@ -35,7 +34,7 @@ class Header:  # Header object created by file at file import containing all rel
         self.swidth = -1  # Split width for arraying
         self.sheight = -1  # Split height for arraying
 
-    def print_header(self):
+    def print_header(self):  # Predominantly for testing
         attrdict = {
             "File Type": self.type,
             "File Size": self.size,
@@ -54,7 +53,7 @@ class Header:  # Header object created by file at file import containing all rel
         self.__init__()
 
 
-class File:  # Object which contains both image and header data. Reception object for incoming image
+class File:  # Object which contains both image and header data. Reception class for incoming image
     def __init__(self, filename):
         self.filename = filename
         self.header = None
@@ -64,8 +63,6 @@ class File:  # Object which contains both image and header data. Reception objec
     def create_header(self):  # Infers values of  each header attribute from .bmp file protocol defined intervals
         self.header = Header()
         self.header.type = "".join([chr(int(i, 16)) for i in self.data[0:2]])
-        # if not func.valid("EQ", self.header.type, "BM"):
-        #     Program.error("")
         self.header.size = int(little_endian(self.data[2:6]), 16)
         self.header.offset = int(little_endian(self.data[10:14]), 16)
         self.header.hsize = int(little_endian(self.data[14:18]), 16)
@@ -81,11 +78,13 @@ class File:  # Object which contains both image and header data. Reception objec
 
 class Image(func.Arr2d):
     def __init__(self, filename):
-        self.file = File(filename)
-        self.file.create_header()
-        super().__init__(self.file.header.width, self.file.header.height)
-        self.pixelsraw = self.file.data[self.file.header.offset:]
-        xpadding = (4 - self.file.header.swidth % 4) % 4  # This gets DWORD padding
-        rows = lstsplit(self.pixelsraw, self.file.header.swidth + xpadding)[::-1]
-        rgbpixels = list(map(lambda row: lstsplit(row[:len(row) - xpadding], int(self.file.header.depth / 8)), rows))
-        self.data = [list(map(indivgs, row)) for row in rgbpixels]
+        self.filename = filename
+        if self.filename is not None:
+            self.file = File(self.filename)
+            self.file.create_header()
+            super().__init__(self.file.header.width, self.file.header.height)
+            self.pixelsraw = self.file.data[self.file.header.offset:]
+            xpadding = (4 - self.file.header.swidth % 4) % 4  # This gets DWORD padding
+            rows = lstsplit(self.pixelsraw, self.file.header.swidth + xpadding)[::-1]
+            rgbpxls = list(map(lambda row: lstsplit(row[:len(row) - xpadding], int(self.file.header.depth / 8)), rows))
+            self.data = [list(map(indivgs, row)) for row in rgbpxls]

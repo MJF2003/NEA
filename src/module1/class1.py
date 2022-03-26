@@ -1,4 +1,4 @@
-from src.func import *
+import src
 from math import pi, exp, atan
 
 
@@ -7,7 +7,7 @@ def gauss(x, y, sigma):  # Calculate gaussian value, given position in the gauss
     return 1 / (2 * pi * (sigma ** 2)) * exp(-((x ** 2 + y ** 2) / (2 * (sigma ** 2))))
 
 
-def gaussian_kernel(size, sigma=1):  # Assemble a gaussian kernel matrix of a defined size and standard deviation
+def gaussian_kernel(size, sigma=1.0):  # Assemble a gaussian kernel matrix of a defined size and standard deviation
     kn = SymMat(size)
     kn.data = [[gauss(x - kn.mid, y - kn.mid, sigma) for x in range(kn.width)] for y in range(kn.height)]
     return kn
@@ -46,32 +46,34 @@ def nms(angle, srnd):  # Perfoms checking on the relevant adjacent pixels given 
     return True  # Returns true if the current pixel is the maximum
 
 
-class Edges(Arr2d):
+class Edges(src.func.Arr2d):
     def __init__(self, image):
         super().__init__(image.width, image.height)
-        self.xedges = Arr2d(image.width, image.height)
-        self.xedges.data = convolve(image, sobelx())
-        self.yedges = Arr2d(image.width, image.height)
-        self.yedges.data = convolve(image, sobely())
-        self.data, self.angles = self.compound()
+        self.data, self.angles = image.data, []
         self.strongval = 1
         self.weakval = 0.4
         self.irrval = 0
 
+    def gaussian_blur(self):
+        self.data = convolve(self.data, gaussian_kernel(5, sigma=1.2))
 
-    def compound(self):
+    def apply_sobel(self):
+        xedges = Arr2d(self.width, self.height)
+        xedges.data = convolve(self.data, sobelx())
+        yedges = Arr2d(self.width, self.height)
+        yedges.data = convolve(self.data, sobely())
         magn = Arr2d(self.width, self.height)  # Assesses the magnitude of each pixel in the edge array
         angs = Arr2d(self.width, self.height)  # Assesses the angle of each edge to the nearest pi/4 window
         for y in range(self.height):
             for x in range(self.width):  # Iterate through each pixel
-                magn.data[y][x] = (self.xedges.data[y][x]**2 + self.yedges.data[y][x]**2)**0.5
+                magn.data[y][x] = (xedges.data[y][x]**2 + yedges.data[y][x]**2)**0.5
                 # Calculate magnitude using sqrt(x**2 + y**2)
                 try:
-                    angs.data[y][x] = round(atan(self.yedges.data[y][x] / self.xedges.data[y][x]) / (pi/4))*(pi/4)
+                    angs.data[y][x] = round(atan(yedges.data[y][x] / xedges.data[y][x]) / (pi/4))*(pi/4)
                 except ZeroDivisionError:
                     angs.data[y][x] = pi/2  # Takes into account the inability to find an tan value for pi/2
                 # Calculate angle of the edge measured from the horizontal
-        return magn.data, angs.data
+        self.data, self.angles = magn.data, angs.data
 
     def nonmax(self):  # Runs NMS on each pixel in the edge array
         for y in range(1, self.height - 1):

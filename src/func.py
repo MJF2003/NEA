@@ -6,30 +6,38 @@ from pathlib import Path
 
 # General Purpose validity checker
 def valid(vtype: str, ipt, comp=None) -> bool:
-    if vtype == "EQ":
-        return ipt == comp
-    elif vtype == "GT":
-        return ipt > comp
-    elif vtype == "LT":
-        return ipt < comp
-    elif vtype == "BT":
-        return comp[0] < ipt < comp[1]
-    elif vtype == "DG":
-        return ipt.isdigit()
-    else:
-        return True
+    try:
+        if vtype == "EQ":
+            return ipt == comp
+        elif vtype == "GT":
+            return ipt > comp
+        elif vtype == "LT":
+            return ipt < comp
+        elif vtype == "BT":
+            return comp[0] < int(ipt) < comp[1]
+        elif vtype == "DG":
+            return ipt.isdigit()
+        else:
+            return True
+    except:
+        return False
+
+
+def get_path(path_from_root):  # Any system file path handler
+    root = Path(__file__).parent.parent
+    file_path = root / Path(path_from_root)
+    return file_path
 
 
 # # # # # # # # # # # # General 2D Array Class Definition # # # # # # # # # # # #
-def convolve(image, kn):
+def convolve(data, kn):
     ckn = copy.deepcopy(kn)
     pad = int(ckn.mid)
-    data = image.data
     output = [list(row) for row in data]
-    for rn in range(pad, len(data)-pad):
-        for pn in range(pad, len(data[rn])-pad):
-            px = [kn.data[y][x] * data[rn + y - pad][pn + x - pad] for y in range(ckn.height) for x in range(ckn.width)]
-            output[rn][pn] = sum(px)
+    for row_no in range(pad, len(data)-pad):
+        for pxl_no in range(pad, len(data[row_no])-pad):
+            px = [kn.data[y][x] * data[row_no + y - pad][pxl_no + x - pad] for y in range(ckn.height) for x in range(ckn.width)]
+            output[row_no][pxl_no] = sum(px)
     return output
 
 

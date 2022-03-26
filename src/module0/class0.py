@@ -1,4 +1,5 @@
-from src import func
+import src
+from src.func import *
 
 
 # # # # # # # # # # # # # # # General Function Definitions # # # # # # # # # # # # # # #
@@ -76,15 +77,14 @@ class File:  # Object which contains both image and header data. Reception class
 # # # # # # # # # End of File Nonsense # # # # # # # # # #
 
 
-class Image(func.Arr2d):
+class Image(Arr2d):
     def __init__(self, filename):
         self.filename = filename
-        if self.filename is not None:
-            self.file = File(self.filename)
-            self.file.create_header()
-            super().__init__(self.file.header.width, self.file.header.height)
-            self.pixelsraw = self.file.data[self.file.header.offset:]
-            xpadding = (4 - self.file.header.swidth % 4) % 4  # This gets DWORD padding
-            rows = lstsplit(self.pixelsraw, self.file.header.swidth + xpadding)[::-1]
-            rgbpxls = list(map(lambda row: lstsplit(row[:len(row) - xpadding], int(self.file.header.depth / 8)), rows))
-            self.data = [list(map(indivgs, row)) for row in rgbpxls]
+        self.file = File(self.filename)
+        self.file.create_header()
+        super().__init__(self.file.header.width, self.file.header.height)
+        self.pixelsraw = self.file.data[self.file.header.offset:]
+        xpadding = (4 - self.file.header.swidth % 4) % 4  # This gets DWORD padding
+        rows = lstsplit(self.pixelsraw, self.file.header.swidth + xpadding)[::-1]
+        rgbpxls = list(map(lambda row: lstsplit(row[:len(row) - xpadding], int(self.file.header.depth / 8)), rows))
+        self.data = [list(map(indivgs, row)) for row in rgbpxls]

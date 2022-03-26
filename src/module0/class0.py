@@ -1,4 +1,3 @@
-import src
 from src.func import *
 
 

@@ -1,4 +1,4 @@
-import src
+from src.func import *
 from math import pi, exp, atan
 
 
@@ -46,7 +46,7 @@ def nms(angle, srnd):  # Perfoms checking on the relevant adjacent pixels given 
     return True  # Returns true if the current pixel is the maximum
 
 
-class Edges(src.func.Arr2d):
+class Edges(Arr2d):
     def __init__(self, image):
         super().__init__(image.width, image.height)
         self.data, self.angles = image.data, []

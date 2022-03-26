@@ -1,0 +1,3 @@
+The program in this module folder is not included in the final project for marking.
+
+It was written for use in testing to put files in the right format for interpretation by the program.

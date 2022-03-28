@@ -37,6 +37,7 @@ class Program:
     def __init__(self):
         self.fileloaded = False
         self.original = None
+        self.model_trained = False
         self.file = None
         self.log = ["Initialising..."]
         self.option = -1
@@ -205,12 +206,12 @@ class Program:
         lcl_file.gaussian_blur()
         lcl_file.apply_sobel()
         lcl_file.nonmax()
-        lcl_file.dblthresh(0.3, 0.4)
+        lcl_file.dblthresh(0.05, 0.2)
         lcl_file.hysteresis()
         lcl_file.hysteresis()
         lcl_file.invert()
         lcl_file.display("Output")
-        choice = input("Would you like to use these detected edges further in the program?: ")
+        choice = input("Would you like to use these detected edges further in the program? (Y/N): ")
         if choice.upper() == "Y":
             self.file = lcl_file
             print("Edges Saved")
@@ -218,10 +219,30 @@ class Program:
             print("Edges Discarded")
 
     def pg_train(self):
-        pass
+        if get_path("src/my_model").exists():
+            self.model_trained = True
+        if self.model_trained:
+            print("Trained model exists. Training will overwrite the saved model")
+            choice = input("Do you want to continue? (Y/N) ")
+            if choice.upper() != "Y":
+                print("Okay. Aborting training function")
+                return None
+        train(*build_model(get_path("src/data/classified")), save_loc=get_path("src/my_model"), epochs=55)
+        self.model_trained = True
+        print("Model was trained!")
 
     def pg_predict(self):
-        pass
+        if self.fileloaded is False:
+            self.error("File has not been loaded", "Sequence Error", 0)
+            return None
+        try:
+            img = np.array(self.original.data)
+            img = np.resize(img, (100, 100, 3))
+            img = tf.expand_dims(img, 0)
+            result = pred_img(img, load_model(Path('my_model')), class_names)
+            print(result[1])
+        except:
+            self.error("Program was unable to predict on this image", "ML Nonsense Error", 1)
 
     def pg_multistep(self):
         print("Starting Multistep Assembler!")

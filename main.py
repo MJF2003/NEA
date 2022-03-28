@@ -1,36 +1,11 @@
-from func import *
-from module2.class2 import *
-from module1.class1 import *
-from module0.class0 import *
+from src.module2.class2 import *
+from src.module1.class1 import *
+from src.module0.class0 import *
+from src.func import *
+from colorama import Fore, Back, Style
 
 import numpy as np
 import copy
-
-
-def full_edges(path):
-    img = Image(path)
-    img.data = convolve(img, gaussian_kernel(5, sigma=1.2))
-    edges = Edges(img)
-    edges.nonmax()
-    edges.dblthresh(0.25, 0.27)
-    edges.hysteresis()
-    edges.hysteresis()
-    edges.invert()
-    edges.display("Output")
-    return edges
-
-
-def test():
-    img = np.array(full_edges("testImages/30mph.bmp").data)
-    img = np.resize(img, (100, 100, 3))
-    img = tf.expand_dims(img, 0)
-
-    train(*build_model(Path('data/classified_edges')), save_loc='my_model', epochs=55)
-
-    print(pred_img(img, load_model(Path('my_model')), class_names))
-
-
-
 
 
 class Program:
@@ -61,7 +36,7 @@ class Program:
         self.menu()  # Display menu upon program initialising
 
     def error(self, message: str, status: str, level: int):  # Error Display Program
-        print(message)
+        print(Fore.BLACK + Back.RED + message + Fore.RESET + Back.RESET)
         if level == 1:  # 1 indicates a fatal error causing the program to reset. Otherwise, it just adds it to the log
             print("RESTARTING...")
             self.log.append(f"Fatal Error - {status}")
@@ -71,7 +46,7 @@ class Program:
 
     def menu(self):
         for key, value in self.menu_dict.items():  # Print out menu
-            print(f"{key:<5}: {value[0]:<20}")
+            print(Fore.WHITE + Back.BLACK + f"{key:<5}: {value[0]:<25}" + Fore.RESET + Back.RESET)
 
         self.option = input("Enter a number from the list above: ")
         while not (valid("DG", self.option) and valid("BT", self.option, comp=(0, 16))):  # Validaiton check
@@ -239,7 +214,7 @@ class Program:
             img = np.array(self.original.data)
             img = np.resize(img, (100, 100, 3))
             img = tf.expand_dims(img, 0)
-            result = pred_img(img, load_model(Path('my_model')), class_names)
+            result = pred_img(img, load_model(Path('src/my_model')), class_names)
             print(result[1])
         except:
             self.error("Program was unable to predict on this image", "ML Nonsense Error", 1)
@@ -251,9 +226,11 @@ class Program:
         while not stop:
             select = input("Enter a function option from the list: ")
             # Validity check on user input
-            if not valid("DG", select) or not valid("BT", select, comp=(0, 16)) or not valid("EQ", select, comp=13):
+            if not (valid("DG", select) and valid("BT", select, comp=(0, 16))):
                 self.error("Entry was not valid", "User Fault", 0)
                 continue
+            elif valid("EQ", select, comp="13"):
+                self.error("Cannot add multistep as part of multistep", "User Fault", 0)
             else:
                 queue.append((select, self.menu_dict[select][1]))
             if input("Would you like to add more functions?: ").upper() != "Y":
@@ -265,7 +242,7 @@ class Program:
     def print_log(self):
         print("Program log is as follows:")
         for errno, error in enumerate(self.log):
-            print(f"{errno}) - {error:<20}")
+            print(f"{errno}) - {error:<25}")
 
     def exit(self):
         self.option = -1
@@ -278,8 +255,10 @@ def main():
             
             You can see the full writeup on my GitHub. I obviously hope everything works but please raise an issue
             on the repo if you come across anything not working.
-            """
-    print(welcome)
+
+"""
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(Fore.BLACK + Back.GREEN + Style.BRIGHT + welcome + Style.RESET_ALL)
     prog = Program()
     print("Thank you for using the program - Michael")
 

@@ -1,7 +1,5 @@
-from src.func import *
-
-
 # # # # # # # # # # # # # # # General Function Definitions # # # # # # # # # # # # # # #
+from src import Arr2d
 
 
 def little_endian(array_slice):

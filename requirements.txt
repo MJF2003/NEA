@@ -2,3 +2,5 @@ matplotlib~=3.5.1
 numpy~=1.22.3
 tensorflow~=2.8.0
 Pillow~=9.0.1
+colorama>=0.4.4
+setuptools>=57.0.0

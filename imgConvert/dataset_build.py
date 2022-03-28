@@ -3,7 +3,7 @@ import os
 import numpy as np
 from pathlib import Path
 
-from src.main import full_edges
+from main import full_edges
 
 dir_path = Path("src/data")
 

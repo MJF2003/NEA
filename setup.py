@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='NEA',
+    name='NEA-mfahey-7407',
     version='1.0',
     packages=['src', 'src.module0', 'src.module1', 'src.module2'],
     url='https://github.com/MJF2003/NEA',

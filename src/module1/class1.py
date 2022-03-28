@@ -1,6 +1,6 @@
-from src.func import *
-from math import pi, exp, atan
 
+from math import pi, exp, atan
+from src import Arr2d, convolve
 
 
 def gauss(x, y, sigma):  # Calculate gaussian value, given position in the gaussian matrix measured from the centre

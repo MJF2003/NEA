@@ -1,4 +1,6 @@
-__all__ = []
+from src.func import *
+
+__all__ = ["Arr2d", "convolve"]
 
 
 

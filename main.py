@@ -52,12 +52,11 @@ class Program:
         while not (valid("DG", self.option) and valid("BT", self.option, comp=(0, 16))):  # Validaiton check
             self.error("That wasn't a valid number", "User Fault", 0)
             self.option = input("Enter a number from the list above: ")
-        #try:
-        self.log.append(self.option)
-        self.menu_dict[self.option][1]()
-
-        #except:
-        #    self.error("Unknown Fatal Error occured", "Unknown Runtime Error", 1)
+        try:
+            self.log.append(self.option)
+            self.menu_dict[self.option][1]()
+        except:  # Allows program to crash out without any red text
+            self.error("Unknown Fatal Error occured", "Unknown Runtime Error", 1)
         if not self.option == -1:
             self.menu()
 
@@ -181,7 +180,7 @@ class Program:
         lcl_file.gaussian_blur()
         lcl_file.apply_sobel()
         lcl_file.nonmax()
-        lcl_file.dblthresh(0.05, 0.2)
+        lcl_file.dblthresh(0.27, 0.35)
         lcl_file.hysteresis()
         lcl_file.hysteresis()
         lcl_file.invert()
@@ -207,9 +206,13 @@ class Program:
         print("Model was trained!")
 
     def pg_predict(self):
+        if get_path("src/my_model").exists():
+            self.model_trained = True
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
+        elif not self.model_trained:
+            self.error("No trained model present. Run function \"Train\"", "Sequence Error", 0)
         try:
             img = np.array(self.original.data)
             img = np.resize(img, (100, 100, 3))

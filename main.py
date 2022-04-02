@@ -66,11 +66,7 @@ class Program:
         if self.fileloaded is not False:
             fl_check = input("File is already loaded. "
                              "Loading will overwrite the file currently loaded.\nDo you want to continue (Y/N)? ")
-            try:
-                if fl_check.upper() != "Y":
-                    return None
-            except ValueError:
-                self.error("Non-String was entered", "Input Error", 0)
+            if fl_check.upper() != "Y":
                 return None
         while 1:
             intended_path = get_path(
@@ -260,7 +256,7 @@ def main():
             on the repo if you come across anything not working.
 
 """
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')  # Clears current screen completely
     print(Fore.BLACK + Back.GREEN + Style.BRIGHT + welcome + Style.RESET_ALL)
     prog = Program()
     print("Thank you for using the program - Michael")

@@ -9,7 +9,17 @@ import copy
 
 
 class Program:
+    """
+    Main Program Class is a class which describes how the main program should run
+    OOP has been used as it allows the use of variables protected by the class, which can be accessed by all methods
+    in the program class responsible for running the program. It also allows functions specfic to the program run,
+    to access and manipulate attributes such as the log and loaded file.
+    """
     def __init__(self):
+        """
+        Sets up inital values of runtime attributes as well as calling the menu function when the program is
+        instantiated
+        """
         self.fileloaded = False
         self.original = None
         self.model_trained = False
@@ -36,6 +46,13 @@ class Program:
         self.menu()  # Display menu upon program initialising
 
     def error(self, message: str, status: str, level: int):  # Error Display Program
+        """
+        General Error display and handler for program runtime
+        :param message: Message to be displayed to the user
+        :param status: Message to be added to the log
+        :param level: Error severity - does the program need to be reset
+        :return: None
+        """
         print(Fore.BLACK + Back.RED + message + Fore.RESET + Back.RESET)
         if level == 1:  # 1 indicates a fatal error causing the program to reset. Otherwise, it just adds it to the log
             print("RESTARTING...")
@@ -45,6 +62,10 @@ class Program:
             self.log.append(f"Error caused by {status}")
 
     def menu(self):
+        """
+        Prints the menu to the user as well as handling choice flow.
+        :return: None
+        """
         for key, value in self.menu_dict.items():  # Print out menu
             print(Fore.WHITE + Back.BLACK + f"{key:<5}: {value[0]:<25}" + Fore.RESET + Back.RESET)
 
@@ -63,6 +84,10 @@ class Program:
     # Menu Function Handler #
 
     def pg_loadfile(self):
+        """
+        Manages UX for loading an image file into the program and saving it to a program variable
+        :return: None
+        """
         if self.fileloaded is not False:
             fl_check = input("File is already loaded. "
                              "Loading will overwrite the file currently loaded.\nDo you want to continue (Y/N)? ")
@@ -87,6 +112,11 @@ class Program:
 
 
     def pg_plotfile(self):
+        """
+        Manages UX for plotting the loaded file to screen using matplotlib.
+        Requires file to be loaded first.
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -94,6 +124,11 @@ class Program:
         print("File displayed")
 
     def pg_asciiart(self):
+        """
+        Manages UX for generating ASCII Art of the loaded file.
+        Requires file to be loaded first.
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -101,6 +136,11 @@ class Program:
         print("ASCII art Generated!")
 
     def pg_gauss(self):
+        """
+        Manages UX for applying and displaying outcome of Gaussian Blur.
+        Requires file to be loaded first.
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -109,6 +149,11 @@ class Program:
         print("Gaussian Blur Applied!")
 
     def pg_sobel(self):
+        """
+        Manages UX for applying and displaying outcome of Sobel Filters.
+        Requires file to be loaded first.
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -117,6 +162,11 @@ class Program:
         print("Sobel Filters Applied!")
 
     def pg_nonmax(self):
+        """
+        Manages UX for applying and displaying outcome of applying non-maximum suppression
+        Requires file to be loaded and Sobel filters to be applied
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -130,6 +180,11 @@ class Program:
         print("NMS Applied!")
 
     def pg_double_thresh(self):
+        """
+        Manages UX for applying and displaying outcome of applying double thresholding.
+        Requires file to be loaded, Sobel filter to be applied and Non-Max Suppression to be applied.
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -143,6 +198,11 @@ class Program:
         print("Double Thresholding Applied!")
 
     def pg_hysteresis(self):
+        """
+        Manages UX for applying and displaying outcome of applying hysteresis tracking.
+        Requires file to be loaded, Sobel, NMS and Double Thresholding to be applied.
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -156,6 +216,11 @@ class Program:
         print("Hysteresis Tracking Applied!")
 
     def pg_invert(self):
+        """
+        Manages UX for applying and displaying outcome of inverting the edges in the image.
+        Requires file to be loaded and edge detection to have been run.
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -169,6 +234,11 @@ class Program:
         print("Edges inverted!")
 
     def pg_fulledge(self):
+        """
+        Manages UX for applying full edge detection to a loaded image and displaying the final outcome to the user.
+        Requires file to be loaded.
+        :return: None
+        """
         if self.fileloaded is False:
             self.error("File has not been loaded", "Sequence Error", 0)
             return None
@@ -189,6 +259,10 @@ class Program:
             print("Edges Discarded")
 
     def pg_train(self):
+        """
+        Manages UX for training a machine learning model.
+        :return: None
+        """
         if get_path("src/my_model").exists():
             self.model_trained = True
         if self.model_trained:
@@ -202,6 +276,10 @@ class Program:
         print("Model was trained!")
 
     def pg_predict(self):
+        """
+        Manages UX for predicting the class of an image of unseen data based on a trained model.
+        :return: None
+        """
         if get_path("src/my_model").exists():
             self.model_trained = True
         if self.fileloaded is False:
@@ -219,6 +297,11 @@ class Program:
             self.error("Program was unable to predict on this image", "ML Nonsense Error", 1)
 
     def pg_multistep(self):
+        """
+        Manages UX for building a queue of functions to run in sequence.
+        No prerequisites.
+        :return: None
+        """
         print("Starting Multistep Assembler!")
         queue = []
         stop = False
@@ -232,28 +315,41 @@ class Program:
                 self.error("Cannot add multistep as part of multistep", "User Fault", 0)
             else:
                 queue.append((select, self.menu_dict[select][1]))
-            if input("Would you like to add more functions?: ").upper() != "Y":
+            if input("Would you like to add more functions? (Y/N): ").upper() != "Y":
                 stop = True
                 for function in queue:
                     self.log.append(function[0])  # Appends function number to program log
                     function[1]()  # Runs indicated funtion
 
     def print_log(self):
+        """
+        Prints the program log to the user screen
+        :return: None
+        """
         print("Program log is as follows:")
         for errno, error in enumerate(self.log):
             print(f"{errno}) - {error:<25}")
 
     def exit(self):
+        """
+        Exits program class completely
+        :return:
+        """
         self.option = -1
 
 
 def main():
+    """
+    Prints welcome and exit messages and instantiates the main program class
+    :return:
+    """
     welcome = """
             Hello and welcome to the testing interface for my Computer Science Coursework 2022.
             I am Michael Fahey (7407) and my NEA is all about detecting road signs. 
             
             You can see the full writeup on my GitHub. I obviously hope everything works but please raise an issue
             on the repo if you come across anything not working.
+            
 
 """
     os.system('cls' if os.name == 'nt' else 'clear')  # Clears current screen completely

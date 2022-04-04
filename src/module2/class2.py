@@ -11,7 +11,13 @@ img_width = 100
 class_names = ['natspdlim', 'rdnarrows', 'thirtymph']
 
 
-def build_model(dataset_loc: Path):  # A very procedural function to assemble an ML model
+def build_model(dataset_loc: Path):
+    """
+    A very procedural function to assemble an ML model. Much of the code if referenced directly from the Tensorflow
+    documentation. Defines datasets and the model including data augmentation
+    :param dataset_loc: Location source of the data set.
+    :return: Model object, Training and Validation datasets
+    """
     try:
         # Extract Datasets from directory
         train_ds = tf.keras.utils.image_dataset_from_directory(  # Define the training set from the directory
@@ -76,6 +82,15 @@ def build_model(dataset_loc: Path):  # A very procedural function to assemble an
 
 
 def train(model, train_ds, val_ds, save_loc, epochs):
+    """
+    Trains the model built by the build_model() function
+    :param model: Direct output of build model
+    :param train_ds: Direct output of build model
+    :param val_ds: Direct output of build model
+    :param save_loc: Location to save the model to for further use
+    :param epochs: Number of epochs to train on
+    :return: None
+    """
     model.fit(
         train_ds,
         validation_data=val_ds,
@@ -85,11 +100,23 @@ def train(model, train_ds, val_ds, save_loc, epochs):
 
 
 def load_model(model_path: Path):
+    """
+    Loads the model specified by the path as a tf model object
+    :param model_path: Location of weights folder
+    :return: Model object
+    """
     model = tf.keras.models.load_model(model_path)
     return model
 
 
 def pred_img(array, model, lcl_classes):
+    """
+    Predicts the class of an unseen image using the softmax activation function
+    :param array: Array containing image
+    :param model: Model object
+    :param lcl_classes: List of output classifications
+    :return: The result of prediction attempt
+    """
     predictions = model.predict(array)
     score = tf.nn.softmax(predictions[0])
 

@@ -1,18 +1,35 @@
 # # # # # # # # # # # # # # # General Function Definitions # # # # # # # # # # # # # # #
+import pathlib
+
 from src import Arr2d
 
 
 def little_endian(array_slice):
-    # Return a hex string given a little endian slice by reversing the slice and filling it to 2 nibbles
+    """
+    Return a hex string given a little endian slice by reversing the slice and filling it to 2 nibbles
+    :param array_slice: 1D array containing data stored with LSB first
+    :return:  Converting it to hex with MSB first
+    """
     return "".join([str(j[2:].zfill(2)) for j in array_slice[::-1]])
 
 
-def indivgs(pixel: list):  # Decimalises and returns a weighted greyscale pixel value based on RGB channels
+def indivgs(pixel: list):
+    """
+    Decimalises and returns a weighted greyscale pixel value based on RGB channels
+    :param pixel: List of three channel values
+    :return: Single greyscale equivalent value
+    """
     rgb, norm = [0.2989, 0.5870, 0.1140], 255
     return sum([int(channel, 16) * (rgb[idx] / norm) for idx, channel in enumerate(pixel[::-1])])
 
 
-def lstsplit(array, split: int):  # Split a list at a given interval
+def lstsplit(array, split: int):
+    """
+    Split a list at a given interval
+    :param array: The long form 1D array to split up
+    :param split: Interval to split at
+    :return: The split list as a 2D array
+    """
     return [array[index:index + split] for index in range(0, len(array), split)]
 
 
@@ -20,7 +37,10 @@ def lstsplit(array, split: int):  # Split a list at a given interval
 # # # # # # # # # File Definition Nonsense # # # # # # # # # #
 
 
-class Header:  # Header object created by file at file import containing all relevant file details
+class Header:
+    """
+    Header object created by file at file import containing all relevant file details
+    """
     def __init__(self):
         self.type = "UNSET"  # Should be set to BM
         self.size = -1  # An integer in bytes
@@ -33,6 +53,10 @@ class Header:  # Header object created by file at file import containing all rel
         self.sheight = -1  # Split height for arraying
 
     def print_header(self):  # Predominantly for testing
+        """
+        Prints key, saved attributes from the header class
+        :return: None
+        """
         attrdict = {
             "File Type": self.type,
             "File Size": self.size,
@@ -51,14 +75,25 @@ class Header:  # Header object created by file at file import containing all rel
         self.__init__()
 
 
-class File:  # Object which contains both image and header data. Reception class for incoming image
-    def __init__(self, filename):
+class File:
+    """
+    Object which contains both image and header data. Reception class for incoming image
+    """
+    def __init__(self, filename: pathlib.Path):
+        """
+        Responsible for reading directly, the bytestream from the file, into a variable
+        :param filename: Location of the file as a path object
+        """
         self.filename = filename
         self.header = None
         with open(self.filename, "rb") as file:
             self.data = [hex(byte) for byte in file.read()]  # Reads pixel stream as hex vals into 1D array
 
-    def create_header(self):  # Infers values of  each header attribute from .bmp file protocol defined intervals
+    def create_header(self):
+        """
+        Boring function which infers values of each header attribute from .bmp file protocol defined intervals
+        :return: None
+        """
         self.header = Header()
         self.header.type = "".join([chr(int(i, 16)) for i in self.data[0:2]])
         self.header.size = int(little_endian(self.data[2:6]), 16)
@@ -75,6 +110,10 @@ class File:  # Object which contains both image and header data. Reception class
 
 
 class Image(Arr2d):
+    """
+    Small class containing reformatted image data and header information.
+    Differs from File class in that the image data is processed into a workable array during instantiation
+    """
     def __init__(self, filename):
         self.filename = filename
         self.file = File(self.filename)
